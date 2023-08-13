@@ -34,7 +34,7 @@
             <p>Current Date : <%= (new java.util.Date()).toLocaleString()%></p>
         </div>  
         <div class="col-md-1" >
-            <input type="button" class="btn-basic" id="lgnout-button" value="Log Out" onclick="location.href='Login.jsp'">
+            <input type="button" class="btn-basic" id="lgnout-button" value="Log Out" onclick="location.href='LogoutServlet'">
         </div>        
     </div>
 </div>
@@ -46,11 +46,13 @@
         <button class="dropdown-btn" > Class Management <i class="fa fa-caret-down"></i></button>
         
             <div class="dropdown-container">
-          <a href="CourseRegistration.jsp">Course Registration </a>
-          <a href="StudentRegistration.jsp">Student Registration </a>
+			<c:if test="${isAdmin }">
+          	<a href="CourseRegistration.jsp">Course Registration </a>
+          	</c:if>          
+          	<a href="StudentRegistration.jsp">Student Registration </a>
           <a href="StudentSearch.jsp">Student Search </a>
         </div>
-        <a href="USR001.html">Users Management</a>
+        <a href="UserManagement.jsp">Users Management</a>
       </div>
    
     <div class="main-contents">

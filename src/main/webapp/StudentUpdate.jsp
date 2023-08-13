@@ -1,8 +1,9 @@
+<%@page import="StudentRegistration.dao.StudentDAO"%>
 <%@page import="StudentRegistration.dao.CourseDAO"%>
-
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>      
-      <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix ="c" %>
+    pageEncoding="ISO-8859-1"
+    %>
+        <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix ="c" %>
     
 <!DOCTYPE html>
 <html lang="en">
@@ -33,15 +34,15 @@
         </div>  
         <div class="col-md-6">
             <p>User: ${currentUser.name }</p>
-            <p >Current Date : <%= (new java.util.Date()).toLocaleString()%>	 </p>
+			<p>Current Date : <%= (new java.util.Date()).toLocaleString()%></p>	
         </div>  
         <div class="col-md-1" >
             <input type="button" class="btn-basic" id="lgnout-button" value="Log Out" onclick="location.href='LogoutServlet'">
         </div>        
     </div>
-    </div>
-    
-    </div>
+</div>
+
+</div>
     <!-- <div id="testsidebar">Hello World </div> -->
     <div class="container">
     <div class="sidenav">
@@ -49,37 +50,43 @@
         <button class="dropdown-btn" > Class Management <i class="fa fa-caret-down"></i></button>
         
             <div class="dropdown-container">
-			<c:if test="${isAdmin }">
+          <c:if test="${isAdmin }">
           <a href="CourseRegistration.jsp">Course Registration </a>
-          </c:if>          <a href="StudentRegisterServlet">Student Registration </a>
+          </c:if>
+          <a href="StudentRegistration.jsp">Student Registration </a>
           <a href="StudentSearch.jsp">Student Search </a>
         </div>
         <a href="UserManagement.jsp">Users Management</a>
       </div>
       <div class="main_contents">
     <div id="sub_content">
-        <form action="StudentRegistrationUpdate" method = "post">
-
-                <h2 class="col-md-6 offset-md-2 mb-5 mt-4">Student Registration</h2>
+			<form action="StudentSearchServlet?id=${oneStudent.studId }" method="post">
+            <h2 class="col-md-6 offset-md-2 mb-5 mt-4">Student Registration</h2>
             <div class="row mb-4">
                 <div class="col-md-2"></div>
+                <%
+                	StudentDAO sdao = new StudentDAO();
+                	int nextStudentId = sdao.getStudentCount() + 1;
+                	request.setAttribute("nextStudentId", nextStudentId);
+                
+                %>
                 <label for="studentID" class="col-md-2 col-form-label">Student ID</label>
                 <div class="col-md-4">
-                    <input type="text" class="form-control" value="STU001" id="studentID" disabled>
+                    <input type="text" class="form-control" value="${oneStudent.studId }" name="studentID"  readonly>
                 </div>
             </div>
             <div class="row mb-4">
                 <div class="col-md-2"></div>
                 <label for="name" class="col-md-2 col-form-label">Name</label>
                 <div class="col-md-4">
-                    <input type="text" class="form-control" id="name" name="name" ">
+                    <input type="text" class="form-control" id="name" name="studentName" value="${oneStudent.name }" >
                 </div>
             </div>
             <div class="row mb-4">
                 <div class="col-md-2"></div>
                 <label for="dob" class="col-md-2 col-form-label">DOB</label>
                 <div class="col-md-4">
-                    <input type="date" class="form-control" id="dob" name="dob">
+                    <input type="date" class="form-control" id="dob" name="studentDOB" value=${oneStudent.dob }>
                 </div>
             </div>
             <fieldset class="row mb-4">
@@ -87,14 +94,14 @@
                 <legend class="col-form-label col-md-2 pt-0">Gender</legend>
                 <div class="col-md-4">
                     <div class="form-check-inline">
-                        <input class="form-check-input" type="radio" name="gender" id="gridRadios1" value="option1"
+                        <input class="form-check-input" type="radio" name="studentGender" id="gridRadios1" value="${oneStudent.gender }"
                             checked>
                         <label class="form-check-label" for="gridRadios1">
                             Male
                         </label>
                     </div>
                     <div class="form-check-inline">
-                        <input class="form-check-input" type="radio" name="gender" id="gridRadios2" value="option2">
+                        <input class="form-check-input" type="radio" name="studentGender" id="gridRadios2" value="${oneStudent.gender }">
                         <label class="form-check-label" for="gridRadios2">
                             Female
                         </label>
@@ -107,17 +114,17 @@
                 <div class="col-md-2"></div>
                 <label for="phone" class="col-md-2 col-form-label">Phone</label>
                 <div class="col-md-4">
-                    <input type="text" class="form-control" id="phone" value="+95 " name="phone">
+                    <input type="text" class="form-control" id="phone" value="${oneStudent.phone } " name="studentPhone">
                 </div>
             </div>
             <div class="row mb-4">
                 <div class="col-md-2"></div>
                 <label for="education" class="col-md-2 col-form-label">Education</label>
                 <div class="col-md-4">
-                    <select class="form-select" aria-label="Education" id="education" name="education">
-                        <option selected>Bachelor of Information Technology</option>
-                        <option value="1">Diploma in IT</option>
-                        <option value="2">Bachelor of Computer Science</option>
+                    <select class="form-select" aria-label="Education" id="education" name="studentEdu" >
+                        <option  >Bachelor of Information Technology</option>
+                        <option >Diploma in IT</option>
+                        <option >Bachelor of Computer Science</option>
     
                     </select>
                 </div>
@@ -125,37 +132,47 @@
             <fieldset class="row mb-4">
                 <div class="col-md-2"></div>
                 <legend class="col-form-label col-md-2 pt-0">Attend</legend>
-    
+                
                 <div class="col-md-4">
+                
                 <%
                 	CourseDAO cDao = new CourseDAO();
                 	request.setAttribute("cList", cDao.getAllCourses());
                 %>
-       
-    			<c:forEach items="${cList}" var="c">
-                    <div class="form-check-inline col-md-2">
-                        <input class="form-check-input" type="checkbox" name="studentAttend" id="gridRadios1" value="${c.courseName }" >
-                        <label class="form-check-label" for="${c.courseName}">
-                           ${c.courseName}
+		       
+			    <c:forEach items="${cList}" var="c">
+			  <div class="form-check-inline col-md-2">
+			    <c:set var="checked" value="false" />
+			    <c:forEach items="${oneStudent.attend}" var="attendedCourse">
+			      <c:if test="${attendedCourse == c.courseName}">
+			        <c:set var="checked" value="true" />
+			      </c:if>
+			    </c:forEach>
+			    <input class="form-check-input" type="checkbox" name="studentAttend" id="${c.courseName}" 
+			      value="${c.courseName}" 
+			      <c:if test="${checked}">checked</c:if>>
+			    <label class="form-check-label" for="${c.courseName}">
+			      ${c.courseName}
+			    </label>
+			  </div>
+			</c:forEach>
 
-                        </label>
       		</div>
-      		</c:forEach>
-      		</div>
+      		
             </fieldset>
             <div class="row mb-4">
                 <div class="col-md-2"></div>
                 <label for="name" class="col-md-2 col-form-label">Photo</label>
                 <div class="col-md-4">
-                    <input type="file" class="form-control" id="name">
+                    <input type="file" class="form-control" id="name" name="studentPhoto" value="${oneStudent.photo }">
                 </div>
             </div>
-    
+    	
             <div class="row mb-4">
                 <div class="col-md-4"></div>
     
-                <div class="col-md-4">
-                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
+               <div class="col-md-4">
+                    <button type="submit" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
                         Update
                     </button>
                     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
@@ -169,7 +186,7 @@
                             </div>
                             <div class="modal-body">
                                
-                               <h5 style="color: rgb(127, 209, 131);">Successfully Update!</h5>
+                               <h5 style="color: rgb(127, 209, 131);">Succesfully Update!</h5>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ok</button>
@@ -188,16 +205,22 @@
             </div>
     
     
-            <!--Modal-->
     
+    <p style="color : red;">${error4 }</p>
+    <p style="color:red;">${NotEmpty }</p>
+                    <p style="color:red;">${insertError }</p>
+                    <p style="color:red;">${success }</p>
+                    <p style="color:red;">${registrationError }</p>
+                    <p style="color:red;">${updateFailed }</p>
             </form>
+            
     </div>
 </div>
 </div>
         <div id="testfooter">
             <span>Copyright &#169; ACE Inspiration 2022</span>
         </div>
-        <script>
+       	 <script>
             /* Loop through all dropdown buttons to toggle between hiding and showing its dropdown content - This allows the user to have multiple dropdowns without any conflict */
             var dropdown = document.getElementsByClassName("dropdown-btn");
             var i;
@@ -213,12 +236,8 @@
               }
               });
             }
-            </script>
+            </script> 
 </body>
 
 </html>
 
-
-
-
-   

@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+    pageEncoding="ISO-8859-1"%>	
+            <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix ="c" %>
+    
 <!DOCTYPE html>
 <html lang="en">
 
@@ -17,7 +19,7 @@
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
         crossorigin="anonymous"></script>
     
-        <title>Course Registration</title>
+        <title>User Registration</title>
 </head>
 
 <body>
@@ -26,15 +28,14 @@
         <div class="container">
             <div class=row>        
                 <div class="col-md-5 ">
-            <a href="MNU001.html"><h3>Student Registration</h3></a>
+            <a href="#"><h3>Student Registration</h3></a>
         </div>  
         <div class="col-md-6">
-            <p>User:${currentUser.name} </p>
+           	            <p>User: ${currentUser.name }</p>
+           	
             <p >Current Date : <%= (new java.util.Date()).toLocaleString()%>	 </p>
         </div>  
-        <div class="col-md-1" >
-            <input type="button" class="btn-basic" id="lgnout-button" value="Log Out" onclick="location.href='Login.jsp'">
-        </div>        
+             
     </div>
 </div>
 
@@ -46,12 +47,15 @@
         <button class="dropdown-btn" > Class Management <i class="fa fa-caret-down"></i></button>
         
             <div class="dropdown-container">
+          <c:if test="${isAdmin }">
           <a href="CourseRegistration.jsp">Course Registration </a>
+          </c:if>
           <a href="StudentRegistration.jsp">Student Registration </a>
           <a href="StudentSearch.jsp">Student Search </a>
         </div>
-        <a href="USR003.html">Users Management</a>
+        <a href="UserManagement.jsp">Users Management</a>
       </div>
+
       <div class="main_contents">
     <div id="sub_content">
         <form action="RegisterServlet" method="post">
@@ -99,9 +103,12 @@
                     </select>
                 </div>
             </div>
+            
             <p style="color:red;">${error }</p>
 <p style="color:red;">${error1 }</p>
 <p style="color:red;">${sameEmail }</p>
+          	    	<a class ="col-md-2" href="Login.jsp">Already Have an Account ? </a>
+                            	
             <div class="row mb-4">
                 <div class="col-md-4"></div>
     
@@ -123,10 +130,13 @@
                                    <h5 style="color: rgb(127, 209, 131);">Registered Successfully !</h5>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-success col-md-2" data-bs-dismiss="modal">Ok</button>
-                                   
+                                    <button type="button" class="btn btn-success col-md-2" data-bs-dismiss="modal">Ok</button> 
                                 </div>
+                                
+                                
+                                
                             </div>
+               
                         </div>
                 </div>
     

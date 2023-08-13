@@ -1,3 +1,5 @@
+<%@page import="StudentRegistration.dao.CourseDAO"%>
+<%@page import="StudentRegistration.dao.StudentDAO"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
             <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix ="c" %>
@@ -30,11 +32,11 @@
         <a href="Welcome.jsp"><h3>Student Registration</h3></a>
     </div>  
     <div class="col-md-6">
-        <p>User : ${list.name }</p>
+        <p>User : ${currentUser.name }</p>
             <p>Current Date : <%= (new java.util.Date()).toLocaleString()%></p>
     </div>  
     <div class="col-md-1" >
-        <input type="button" class="btn-basic" id="lgnout-button" value="Log Out" onclick="location.href='Login.jsp'">
+        <input type="button" class="btn-basic" id="lgnout-button" value="Log Out" onclick="location.href='LogoutServlet'">
     </div>        
 </div>
 </div>
@@ -47,22 +49,23 @@
         <button class="dropdown-btn" > Class Management <i class="fa fa-caret-down"></i></button>
         
             <div class="dropdown-container">
+			<c:if test="${isAdmin }">
           <a href="CourseRegistration.jsp">Course Registration </a>
-          <a href="StudentRegisterServlet">Student Registration </a>
+          </c:if>          <a href="StudentRegisterServlet">Student Registration </a>
           <a href="StudentSearch.jsp">Student Search </a>
         </div>
-        <a href="USR003.html">Users Management</a>
+        <a href="UserManagement.jsp">Users Management</a>
       </div>
       <div class="main_contents">
     <div id="sub_content">
       <form class="row g-3 mt-3 ms-2">
         <div class="col-auto">
           <label for="staticEmail2" class="visually-hidden">studentID</label>
-          <input type="text"  class="form-control" id="staticEmail2" placeholder="Student ID">
+          <input type="text"  class="form-control" id="staticEmail2" name="studentID"   >
         </div>
         <div class="col-auto">
           <label for="inputPassword2" class="visually-hidden">studentName</label>
-          <input type="text" class="form-control" id="inputPassword2" placeholder="Student Name">
+          <input type="text" class="form-control" id="inputPassword2"  name="studentName">
         </div>
         <div class="col-auto">
             <label for="inputPassword2" class="visually-hidden">Course</label>
@@ -87,16 +90,27 @@
           </tr>
         </thead>
         <tbody>
-        <c:forEach items="${applicationScope.list}" var="list">
+        <% 
+        	StudentDAO dao = new StudentDAO();
+            request.setAttribute("stuList", dao.getAllStudents());
+            CourseDAO cDao = new CourseDAO();
+            request.setAttribute("cList", cDao.getAllCourses());
+            		
+        %>
+        <c:forEach items="${stuList}" var="student" varStatus="s">
             
           <tr>
-            <th scope="row">1</th>
-            <td>STU0001</td>
-            <td>${list.name }</td>
-            <td><c:forEach items="${applicationScope.courses}" var="courseName">
-            ${courseName } </c:forEach></td>
+            <th scope="row">${s.index+1}</th>
+             <td>${student.studId}</td>
+                <td>${student.name}</td>
             <td>
-              <a href="StudentRegistrationUpdate.jsp"><button type="submit" class="btn btn-secondary mb-2">See More</button></a> 
+			 <c:forEach items="${student.attend}" var="course" varStatus="c">
+        	${course}
+        	<c:if test="${not c.last}">, </c:if>
+      </c:forEach>
+</td>
+            <td>
+              <a href="StudentSearchServlet?id=${student.studId }"><button type="submit" class="btn btn-secondary mb-2">See More</button></a> 
             </td>
           </tr>
           </c:forEach>

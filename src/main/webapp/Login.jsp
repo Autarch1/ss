@@ -21,7 +21,10 @@
           <input type="email" placeholder="Enter Your Email" name="email"/>
           <input type="password" placeholder="Enter Your Password" name="password"/>
           <button>login</button>
+          <p class="text-danger">${Blank }</p>
           <p style="color:red;">${loginError }</p>
+                    
+          
           <p class="message">Not registered? <a href="Register.jsp">Create an account</a></p>
         </form>
       </div> 

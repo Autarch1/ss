@@ -1,9 +1,8 @@
-<%@page import="StudentRegistration.dao.CourseDAO"%>
-
+<%@page import="StudentRegistration.dao.UserDAO"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-          <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix ="c" %>
-  
+            <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix ="c" %>
+    
 <!DOCTYPE html>
 <html lang="en">
 
@@ -25,19 +24,21 @@
 </head>
 
 <body>
-    <div id="testheader">
+   <div id="testheader">
         <div class="container">
             <div class=row>        
                 <div class="col-md-5 ">
-            <a href="Welcome.jsp"><h3>Student Registration</h3></a>
+            <a href="#"><h3>Student Registration</h3></a>
         </div>  
         <div class="col-md-6">
-             <p>User : ${currentUser.name }</p>
-            <p>Current Date : <%= (new java.util.Date()).toLocaleString()%></p>
-        </div>  
+           	            <p>User: ${currentUser.name }</p>
+           	
+            <p >Current Date : <%= (new java.util.Date()).toLocaleString()%>	 </p>
+        </div> 
         <div class="col-md-1" >
             <input type="button" class="btn-basic" id="lgnout-button" value="Log Out" onclick="location.href='LogoutServlet'">
-        </div>        
+        </div>   
+             
     </div>
 </div>
 
@@ -45,62 +46,100 @@
     <!-- <div id="testsidebar">Hello World </div> -->
     <div class="container">
     <div class="sidenav">
-        <p>${isAdmin }</p>
+        
         <button class="dropdown-btn" > Class Management <i class="fa fa-caret-down"></i></button>
         
             <div class="dropdown-container">
-          <c:if test="${isAdmin }">
-          <a href="CourseRegistration.jsp">Course Registration </a>
-          </c:if>
-          <a href="StudentRegistration.jsp">Student Registration </a>
+          <a href="CourseRegistration.jsp">Course Registration </a>          
+          <a href="StudentRegisterServlet">Student Registration </a>
           <a href="StudentSearch.jsp">Student Search </a>
         </div>
         <a href="UserManagement.jsp">Users Management</a>
       </div>
       <div class="main_contents">
     <div id="sub_content">
-    <form action="CourseServlet" method="post">
-
-        <h2 class="col-md-6 offset-md-2 mb-5 mt-4">Course Registration</h2>
-        <div class="row mb-4">
-         <%
-                	CourseDAO cDao = new CourseDAO();
-        			 int nextCourseId = cDao.getCourseCount() + 1;
-        			  request.setAttribute("nextCourseId", nextCourseId);
-                %>
-            <div class="col-md-2"></div>
-            <label for="id" class="col-md-2 col-form-label">ID </label>
-            <div class="col-md-4">
-                <input type="text" class="form-control" id="id" name="id" value="COU${String.format('%03d', nextCourseId)}"   readonly>
-            </div>
-        </div>
-
+    
+        <form action="UserUpdateServlet?id=${oneUser.user_id}" method="post" >
+	
+        <h2 class="col-md-6 offset-md-2 mb-5 mt-4">User Update</h2>
+          
         <div class="row mb-4">
             <div class="col-md-2"></div>
-            <label for="name" class="col-md-2 col-form-label">Name</label>
+            <label for="email" class="col-md-2 col-form-label">Name</label>
+            <c:if test="${isAdmin }">
             <div class="col-md-4">
-                <input type="text" class="form-control" id="name" name="courseName" >
+                <input type="text" class="form-control" id="email" value="${oneUser.name }" name="name">
+            </div>
+            </c:if>
+            
+        </div>
+        
+         <div class="row mb-4">
+                <div class="col-md-2"></div>
+                <label for="email" class="col-md-2 col-form-label">Email</label>
+                 <c:if test="${isAdmin }">
+                <div class="col-md-4">
+                    <input type="email" class="form-control" id="email"  name="email" value="${oneUser.email }" readonly >
+                </div>
+                </c:if>
+            </div>
+        <div class="row mb-4">
+            <div class="col-md-2"></div>
+            <label for="Passowrd" class="col-md-2 col-form-label">Passowrd</label>
+             <c:if test="${isAdmin }">
+            <div class="col-md-4">
+                <input type="password" class="form-control" id="name" value="${oneUser.password }" name="password">
+            </div>
+            </c:if>
+
+        </div>
+        <div class="row mb-4">
+            <div class="col-md-2"></div>
+            <label for="confirmPassword" class="col-md-2 col-form-label">Confirm Passowrd</label>
+             <c:if test="${isAdmin }">
+            <div class="col-md-4">
+                <input type="password" class="form-control" id="confirmPassword" value="${oneUser.password }" name="confirmPassword">
+            </div>
+            </c:if>
+        </div>
+        <div class="row mb-4">
+            <div class="col-md-2"></div>
+            <label for="userRole" class="col-md-2 col-form-label">User Role</label>
+            <div class="col-md-4">
+                <select class="form-select" aria-label="Education" id="userRole" value="${oneUser.role }" name="role">
+				<c:if test="${isAdmin }">
+                    <option value="2">Admin</option>
+                    </c:if>
+                    <option value="1" selected>User</option>
+
+
+                </select>
             </div>
         </div>
-      
+        <p style="color:red;">${blank }</p>
+       <p style="color:red;">${password }</p>
+              <p style="color:red;">${updateFailed }</p>
+              <p style="color:red;">${sameEmail }</p>
+       
         <div class="row mb-4">
             <div class="col-md-4"></div>
 
             <div class="col-md-6">
                
 
-                <button type="submit" class="btn btn-secondary col-md-2" data-bs-toggle="modal" data-bs-target="#exampleModal">Add</button>
+                <button type="submit" class="btn btn-success col-md-2" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button>
                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
                     aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Course Registration</h5>
+                                <h5 class="modal-title" id="exampleModalLabel">User Update</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <h5 style="color: rgb(127, 209, 131);">Registered Succesfully !</h5>
+                               
+                               <h5 style="color: rgb(127, 209, 131);">Succesfully Updated !</h5>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-success col-md-2" data-bs-dismiss="modal">Ok</button>
@@ -109,10 +148,13 @@
                         </div>
                     </div>
             </div>
+            <button type="button" class="btn btn-secondary col-md-2 " onclick="location.href = 'UserManagement.jsp';">
+                Back
+            </button>
+    
 
         </div>
         </div>
-        <p style = "color : red;">${error3 }</p>
         </form>
     </div>
 </div>
@@ -140,3 +182,8 @@
 </body>
 
 </html>
+
+    
+
+
+    

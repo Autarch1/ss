@@ -49,6 +49,7 @@ public class RegisterServlet extends HttpServlet {
 
 		
 		UserBean ub = new UserBean();
+		
 		ub.setName(request.getParameter("name"));
 		ub.setEmail(request.getParameter("email"));
 		ub.setPassword(request.getParameter("password"));
@@ -64,7 +65,7 @@ public class RegisterServlet extends HttpServlet {
 			request.setAttribute("error1", "Field Cannot be blank");
 			request.setAttribute("sb", ub);
 			request.getRequestDispatcher("Register.jsp").forward(request, response);
-
+			return;
 		}
 		if(ub.getPassword().equals(ub.getConfirmPassword())) {
 			isSamePsw = true;
@@ -76,7 +77,9 @@ public class RegisterServlet extends HttpServlet {
 
 				}
 				
-			}if(!isDuplicate) {
+			}
+			
+			if(!isDuplicate) {
 				UserRequestDTO dto = new UserRequestDTO();
 				dto.setName(ub.getName());
 				dto.setEmail(ub.getEmail());
@@ -97,7 +100,7 @@ public class RegisterServlet extends HttpServlet {
 		}
 		
 		
-		else {
+		if(!isSamePsw) {
 			request.setAttribute("error", "Password doesn't match");
 			request.setAttribute("sb", ub);
 			System.out.println("1234");
@@ -113,42 +116,5 @@ public class RegisterServlet extends HttpServlet {
 		
 	}
 }
-		
-//
-//if(ub.getPassword().equals(ub.getConfirm_password()) ) {
-//	isSamePw = true;
-//	for(UserResponseDTO res : resList) {
-//		if(res.getEmail().equals(ub.getEmail())&&res.getIsVerified().equalsIgnoreCase("Yes")) {
-//			isDupe = true;
-//			m.addAttribute("errorMsg", "This email already exists");
-//			return "Register";
-//		}
-//		
-//	}
-//	if(!isDupe) {
-//		session.setAttribute("registeredUser", ub);
-//		for(UserResponseDTO res:resList) {
-//			if(res.getEmail().equals(ub.getEmail())&&res.getIsVerified().equalsIgnoreCase("No")) {
-//				System.out.println("Need to verify OTP - User");
-//				session.removeAttribute("otpLimit");
-//				return "redirect:/ResendOTP";
-//			}
-//		}	
-//		
-//		session.removeAttribute("otpLimit");
-//		int result = userDao.storeUsers(req);
-//
-//		if(result==0) {
-//			m.addAttribute("errorMsg", "Error While Registering User");
-//			return "Register";
-//		}
-//	}
-//	
-//	
-//}
-//if(!isSamePw) {
-//	m.addAttribute("errorMsg","Passwords Don't Match");
-//	return "Register";
-//}
 
 

@@ -2,13 +2,14 @@ package StudentRegistration.dto;
 
 public class StudentResponseDTO {
 	private String studId;
-	private String Name;
-	private String DOB;
-	private String Gender;
-	private String Phone;
-	private String Education;
-	private String [] Attend;
-	private String Photo;
+	private String name;
+	private String dob;
+	private String gender;
+	private String phone;
+	private String education;
+	private String [] attend;
+	private String photo;
+	private int user_id;
 	public String getStudId() {
 		return studId;
 	}
@@ -16,47 +17,55 @@ public class StudentResponseDTO {
 		this.studId = studId;
 	}
 	public String getName() {
-		return Name;
+		return name;
 	}
 	public void setName(String name) {
-		Name = name;
+		this.name = name;
 	}
-	public String getDOB() {
-		return DOB;
+	
+	public String getDob() {
+		return dob;
 	}
-	public void setDOB(String dOB) {
-		DOB = dOB;
+	public void setDob(String dob) {
+		this.dob = dob;
 	}
 	public String getGender() {
-		return Gender;
+		return gender;
 	}
 	public void setGender(String gender) {
-		Gender = gender;
+		this.gender = gender;
 	}
 	public String getPhone() {
-		return Phone;
+		return phone;
 	}
 	public void setPhone(String phone) {
-		Phone = phone;
+		this.phone = phone;
 	}
 	public String getEducation() {
-		return Education;
+		return education;
 	}
 	public void setEducation(String education) {
-		Education = education;
+		this.education = education;
 	}
 	public String[] getAttend() {
-		return Attend;
+		return attend;
 	}
 	public void setAttend(String[] attend) {
-		Attend = attend;
+		this.attend = attend;
 	}
 	public String getPhoto() {
-		return Photo;
+		return photo;
 	}
 	public void setPhoto(String photo) {
-		Photo = photo;
+		this.photo = photo;
 	}
+	public int getUser_id() {
+		return user_id;
+	}
+	public void setUser_id(int user_id) {
+		this.user_id = user_id;
+	}
+	
 	
 	
 }

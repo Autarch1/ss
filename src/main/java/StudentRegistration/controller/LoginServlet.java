@@ -46,31 +46,51 @@ public class LoginServlet extends HttpServlet {
 		
 		 String email = request.getParameter("email");
 	      String password = request.getParameter("password");
+	      
           HttpSession session = request.getSession();
-
-
 	        UserDAO dao = new UserDAO();
-	        UserResponseDTO user = dao.getOneUser(email);
-//	        UserResponseDTO admin = dao.getAdmin(email);
-//	        
-//	        if (admin != null && admin.getRole().equals(2)) {
-//	            session.setAttribute("isLoggedIn", true);
-//	            session.setAttribute("userRole", "admin");
-//	            response.sendRedirect("Welcome.jsp");
-//	        }
+	        ArrayList<UserResponseDTO> user= dao.getAllUsers();
+	        UserResponseDTO admin = dao.getAdmin();
+	        boolean isAdmin = false;
+	        boolean isUser = false;
 	        
-	        if (user != null && user.getPassword().equals(password)) {
-	            session.setAttribute("currentUser", user);
-	            response.sendRedirect("Welcome.jsp");
-	        } else {
-	        	System.out.println("sadad");
-	        	request.setAttribute("loginError", "Invalid email or password.");
-	            request.getRequestDispatcher("Login.jsp").forward(request, response);
+	        System.out.println(email);
+	        
+	        if(email.equals("") || password.equals("")) {
+	        	System.out.println("a kone htae ha lee lar");
+	        	request.setAttribute("Blank", "Fill all the data");
+	        	request.getRequestDispatcher("Login.jsp").forward(request, response);
+	        	return;
+	        }
+	        if(admin.getEmail().equals(email) && admin.getPassword().equals(password)) {
+	        	 isAdmin = true;
+	        	 session.setAttribute("isAdmin", isAdmin);
+	        	 session.setAttribute("currentUser", admin);
+		   	     session.setAttribute("isLoggedIn", "Login");
+	        	 request.getRequestDispatcher("CourseRegistration.jsp").forward(request, response);
+	        	 
+	        }
+	        if(!isAdmin) {
+	        	for(UserResponseDTO res : user) {
+	        		if(res.getEmail().equals(email) && res.getPassword().equals(password)) {
+	        			isUser = true;
+	    	            session.setAttribute("currentUser", res);	        			
+	        		}
+	        	}
+	        	if(!isUser) {
+		        	System.out.println("whyyyy");
+		        	request.setAttribute("loginError", "Invlaid email or password");
+		        	request.getRequestDispatcher("Login.jsp").forward(request, response);
+		        	return;
+		        }
+	        	   session.setAttribute("isUser", isUser);
+	   	        session.setAttribute("isLoggedIn", "Login");
+	   	        request.getRequestDispatcher("Welcome.jsp").forward(request, response);
+	   	        
 	        }
 	        
-	        session.setAttribute("isLoggedIn", "LogIn");
-	        
-	      
+	     
+
 	}
 }
 

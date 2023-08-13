@@ -41,9 +41,12 @@ public class UserDAO {
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
 				UserResponseDTO res = new UserResponseDTO();
+				res.setUser_id(rs.getInt("user_id"));
 				res.setName(rs.getString("name"));
 				res.setEmail(rs.getString("email"));
 				res.setPassword(rs.getString("password"));
+				res.setRole(rs.getString("role"));
+
 				resList.add(res);
 			}
 			
@@ -53,20 +56,21 @@ public class UserDAO {
 		return resList;
 	}
 	
-public UserResponseDTO getOneUser(String email) {
+public UserResponseDTO getOneUser(int id) {
 		
 		UserResponseDTO res = new UserResponseDTO();
 		
-		String sql = "select*from user where email=?";
+		String sql = "select * from user where user_id=?";
 		
 		try {
 			PreparedStatement ps = con.prepareStatement(sql);
-            ps.setString(1, email);
+            ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
 				res.setName(rs.getString("name"));;
 				res.setEmail(rs.getString("email"));;
 				res.setPassword(rs.getString("password"));
+				res.setUser_id(rs.getInt("user_id"));
 				return res;
 			}
 		}catch(SQLException e) {
@@ -76,31 +80,34 @@ public UserResponseDTO getOneUser(String email) {
 		return null;
 	}
 
-public UserResponseDTO getAdmin(String email) {
+public UserResponseDTO getAdmin() {
 	
 	UserResponseDTO res = new UserResponseDTO();
 	
-	String sql = "select*from user where email=? and role=2";
+	String sql = "select*from user where role=2";
+	
 	
 	try {
 		PreparedStatement ps = con.prepareStatement(sql);
-        ps.setString(1, email);
 		ResultSet rs = ps.executeQuery();
-		while(rs.next()) {
-			res.setName(rs.getString("name"));;
-			res.setEmail(rs.getString("email"));;
+		
+		while (rs.next()) {
+			res.setName(rs.getString("name"));
+			res.setEmail(rs.getString("email"));
 			res.setPassword(rs.getString("password"));
 			res.setRole(rs.getString("role"));
-			return res;
+
+			
 		}
-	}catch(SQLException e) {
-		System.out.println("fff"+e.getMessage());
+			
+	}catch (SQLException e) {
+		System.out.println(e.getMessage());
 	}
 	
-	return null;
+	return res;
 }
 
-public static int getUserId(String userEmail) {
+public int getUserId(String userEmail) {
 	int id = 0;
 	String sql = "select user_id from user where email=?";
 	
@@ -118,4 +125,21 @@ public static int getUserId(String userEmail) {
 	
 	return id;
 }
+
+public int updateUser(UserRequestDTO dto) {
+	int result = 0;
+	String sql = "UPDATE user SET name=?,password=? WHERE email=?";
+	try {
+		PreparedStatement ps =con.prepareStatement(sql);
+		ps.setString(1, dto.getName());	
+		ps.setString(2, dto.getPassword());
+		ps.setString(3, dto.getEmail());
+		result = ps.executeUpdate();
+	} catch (SQLException e) {
+		System.out.println(e.getMessage());
+	}
+	return result;
+}
+
+
 }

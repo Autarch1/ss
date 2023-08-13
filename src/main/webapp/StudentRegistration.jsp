@@ -1,3 +1,4 @@
+<%@page import="StudentRegistration.dao.StudentDAO"%>
 <%@page import="StudentRegistration.dao.CourseDAO"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"
@@ -36,7 +37,7 @@
 			<p>Current Date : <%= (new java.util.Date()).toLocaleString()%></p>	
         </div>  
         <div class="col-md-1" >
-            <input type="button" class="btn-basic" id="lgnout-button" value="Log Out" onclick="location.href='Login.jsp'">
+            <input type="button" class="btn-basic" id="lgnout-button" value="Log Out" onclick="location.href='LogoutServlet'">
         </div>        
     </div>
 </div>
@@ -49,11 +50,13 @@
         <button class="dropdown-btn" > Class Management <i class="fa fa-caret-down"></i></button>
         
             <div class="dropdown-container">
+          <c:if test="${isAdmin }">
           <a href="CourseRegistration.jsp">Course Registration </a>
+          </c:if>
           <a href="StudentRegistration.jsp">Student Registration </a>
           <a href="StudentSearch.jsp">Student Search </a>
         </div>
-        <a href="USR003.html">Users Management</a>
+        <a href="UserManagement.jsp">Users Management</a>
       </div>
       <div class="main_contents">
     <div id="sub_content">
@@ -62,9 +65,15 @@
             <h2 class="col-md-6 offset-md-2 mb-5 mt-4">Student Registration</h2>
             <div class="row mb-4">
                 <div class="col-md-2"></div>
+                <%
+                	StudentDAO sdao = new StudentDAO();
+                	int nextStudentId = sdao.getStudentCount() + 1;
+                	request.setAttribute("nextStudentId", nextStudentId);
+                
+                %>
                 <label for="studentID" class="col-md-2 col-form-label">Student ID</label>
                 <div class="col-md-4">
-                    <input type="text" class="form-control" value="STU00" name="studentID" >
+                    <input type="text" class="form-control" value="STU${String.format('%03d', nextStudentId)}" name="studentID"  readonly>
                 </div>
             </div>
             <div class="row mb-4">
@@ -195,6 +204,7 @@
     <p style="color:red;">${NotEmpty }</p>
                     <p style="color:red;">${insertError }</p>
                     <p style="color:red;">${success }</p>
+                    <p style="color:red;">${registrationError }</p>
             </form>
             
     </div>
