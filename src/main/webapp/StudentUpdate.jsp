@@ -199,6 +199,10 @@
             <button type="button" class="btn btn-danger  " onclick="location.href = 'StudentSearch.jsp';">
                 Cancel
             </button>
+            
+             <button type="button" class="btn btn-primary  " onclick="location.href = 'StudentDeleteServlet?id=${oneStudent.studId}';">
+                Delete
+            </button>
     
                 </div>
     

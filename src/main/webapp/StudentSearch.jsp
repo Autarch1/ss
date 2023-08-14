@@ -1,3 +1,9 @@
+<%@page import="java.util.List"%>
+<%@page import="java.util.stream.Collectors"%>
+<%@page import="java.util.stream.Collector"%>
+<%@page import="java.net.http.HttpRequest"%>
+<%@page import="StudentRegistration.dto.StudentResponseDTO"%>
+<%@page import="java.util.ArrayList"%>
 <%@page import="StudentRegistration.dao.CourseDAO"%>
 <%@page import="StudentRegistration.dao.StudentDAO"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
@@ -25,6 +31,7 @@
 </head>
 
 <body>
+
   <div id="testheader">
     <div class="container">
         <div class=row>        
@@ -51,21 +58,23 @@
             <div class="dropdown-container">
 			<c:if test="${isAdmin }">
           <a href="CourseRegistration.jsp">Course Registration </a>
-          </c:if>          <a href="StudentRegisterServlet">Student Registration </a>
+          </c:if>         
+           <a href="StudentRegisterServlet">Student Registration </a>
+           
           <a href="StudentSearch.jsp">Student Search </a>
         </div>
         <a href="UserManagement.jsp">Users Management</a>
       </div>
       <div class="main_contents">
     <div id="sub_content">
-      <form class="row g-3 mt-3 ms-2">
+      <form class="row g-3 mt-3 ms-2" action="StudentSearch.jsp" method="get">
         <div class="col-auto">
           <label for="staticEmail2" class="visually-hidden">studentID</label>
-          <input type="text"  class="form-control" id="staticEmail2" name="studentID"   >
+          <input type="text"  class="form-control" id="staticEmail2" name="studentID"  placeholder="student ID" >
         </div>
         <div class="col-auto">
           <label for="inputPassword2" class="visually-hidden">studentName</label>
-          <input type="text" class="form-control" id="inputPassword2"  name="studentName">
+          <input type="text" class="form-control" id="inputPassword2"  name="studentName" placeholder="Name">
         </div>
         <div class="col-auto">
             <label for="inputPassword2" class="visually-hidden">Course</label>
@@ -75,7 +84,7 @@
           <button type="submit" class="btn btn-success mb-3">Search</button>
         </div>
         <div class="col-auto">
-          <button type="submit" class="btn btn-secondary mb-3">Reset</button>
+          <button type="reset" class="btn btn-secondary mb-3" onclick="location.herf='StudentSearch.jsp'">Reset</button>
         </div>
       </form>
 <div>
@@ -91,8 +100,14 @@
         </thead>
         <tbody>
         <% 
+            String id = (String)request.getParameter("studentID");
+            String name = (String) request.getParameter("studentName");
         	StudentDAO dao = new StudentDAO();
-            request.setAttribute("stuList", dao.getAllStudents());
+           	List<StudentResponseDTO> dto = dao.getAllStudents();
+            if(id!=null&& name!=null){		
+            	dto = dto.stream().filter(stu->stu.getStudId().equals(id) && stu.getName().equals(name)).collect(Collectors.toList());
+            }
+            request.setAttribute("stuList", dto);
             CourseDAO cDao = new CourseDAO();
             request.setAttribute("cList", cDao.getAllCourses());
             		
@@ -109,14 +124,19 @@
         	<c:if test="${not c.last}">, </c:if>
       </c:forEach>
 </td>
+<c:if test="${isAdmin }">
             <td>
               <a href="StudentSearchServlet?id=${student.studId }"><button type="submit" class="btn btn-secondary mb-2">See More</button></a> 
             </td>
+            </c:if>
           </tr>
-          </c:forEach>
           
+          </c:forEach>
         </tbody>
       </table>
+                <p style="color:red;">${success}</p>
+      			          <p style="color:red;">${fail}</p>
+      			
     </div>
     </div>
 </div>

@@ -1,4 +1,8 @@
+<%@page import="java.util.stream.Collectors"%>
+<%@page import="StudentRegistration.dto.UserResponseDTO"%>
 <%@page import="StudentRegistration.dao.UserDAO"%>
+<%@page import="java.util.List"%>
+
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
             <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix ="c" %>
@@ -58,14 +62,14 @@
       </div>
       <div class="main_contents">
     <div id="sub_content">
-        <form class="row g-3 mt-3 ms-2">
+        <form class="row g-3 mt-3 ms-2" action="UserManagement.jsp" method="get">
             <div class="col-auto">
                 <label for="userID" class="visually-hidden">User Id</label>
-                <input type="text" class="form-control" id="userID" placeholder="User ID">
+                <input type="text" class="form-control" id="userID" placeholder="User ID" name="user_id">
             </div>
             <div class="col-auto">
                 <label for="userName" class="visually-hidden">User Name</label>
-                <input type="text" class="form-control" id="userName" placeholder="User Name">
+                <input type="text" class="form-control" id="userName" placeholder="User Name" name="name">
             </div>
     
             <div class="col-auto">
@@ -79,7 +83,7 @@
             </div>
             </c:if>
             <div class="col-auto">
-                <button type="submit" class="btn btn-danger mb-3">Reset</button>
+                <button type=reset class="btn btn-danger mb-3" >Reset</button>
             </div>
         </form>
     
@@ -96,8 +100,15 @@
             <tbody>
             
             <% 
+/* 			String id = (String) request.getParameter("id");
+ */            String name = (String) request.getParameter("name");
             	UserDAO dao = new UserDAO();
-            	request.setAttribute("userList", dao.getAllUsers());
+				List<UserResponseDTO> dto =dao.getAllUsers();
+				if( name!=null){
+					dto = dto.stream().filter(user->user.getName().equals(name)).collect(Collectors.toList());
+				}
+
+            	request.setAttribute("userList", dto);
             	
             %>
             <c:if test="${isUser }">
@@ -124,12 +135,12 @@
                  
                  
                 <td>
-                    <button type="button" class="btn btn-success  " onclick="location.href = 'UserUpdateServlet?id=${s.user_id}';">
+                    <button type="submit" class="btn btn-success  " onclick="location.href = 'UserUpdateServlet?id=${s.user_id}';">
                         Update
                     </button>
                 </td>
                 <td><button type="submit" class="btn btn-secondary mb-3" data-bs-toggle="modal"
-                    data-bs-target="#exampleModal">Delete</button>
+                    data-bs-target="#exampleModal" onclick="location.href ='UserDeleteServlet?id=${s.user_id }';" >Delete</button>
                     </td>
     
                 </tr>   
@@ -138,6 +149,8 @@
                     
             </tbody>
         </table>
+    <p style="color:red;">${success }</p>
+        <p style="color:red;">${fail }</p>
     
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">

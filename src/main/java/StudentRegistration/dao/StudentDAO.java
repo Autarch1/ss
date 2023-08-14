@@ -141,6 +141,44 @@ public StudentResponseDTO getOneStudent(String id) {
 		return result;
 	}
 
+	public int deleteStudent(String id) {
+	    int result = 0;
+	    String sql = "DELETE FROM student WHERE student_id= ?";
+	    try {
+	        PreparedStatement ps = con.prepareStatement(sql);
+	        ps.setString(1, id);
+	        result = ps.executeUpdate();
+	    } catch (SQLException e) {
+	        System.out.println(e.getMessage());
+	    }
+	    return result;
+	}	
 	
 	
-}
+	
+	
+
+	    public ArrayList<StudentResponseDTO> searchStudents(String studentID, String studentName, String attend) {
+	        ArrayList<StudentResponseDTO> resultList = new ArrayList<>();
+	        
+	        try (Connection con = MyConnection.getConnection()) {
+	            String sql = "SELECT * FROM student WHERE student_id LIKE ? AND UPPER(studentName) LIKE ? AND studentAttend = ?";
+	            PreparedStatement ps = con.prepareStatement(sql);
+	            ps.setString(1, studentID + "%");
+	            ps.setString(2, studentName.toUpperCase() + "%");
+	            ps.setString(3, attend);
+	            ResultSet rs = ps.executeQuery();
+	            while (rs.next()) {
+	                StudentResponseDTO student = new StudentResponseDTO();
+	                resultList.add(student);
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	        
+	        return resultList;
+	    }
+	}
+
+	
+

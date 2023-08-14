@@ -61,6 +61,11 @@ public class StudentSearchServlet extends HttpServlet {
 			  System.out.println("ssss");
 		        return;
 		    }
+		
+		if(session.getAttribute("isAdmin")==null) {
+			request.getRequestDispatcher("Welcome.jsp").forward(request, response);
+			return;
+		}
 		String id = request.getParameter("id");
 		StudentResponseDTO oneStudent = dao.getOneStudent(id);
 		

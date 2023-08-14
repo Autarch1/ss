@@ -141,5 +141,17 @@ public int updateUser(UserRequestDTO dto) {
 	return result;
 }
 
+public int deleteUser(int id) {
+    int result = 0;
+    String sql = "DELETE FROM user WHERE user_id = ?";
+    try {
+        PreparedStatement ps = con.prepareStatement(sql);
+        ps.setInt(1, id);
+        result = ps.executeUpdate();
+    } catch (SQLException e) {
+        System.out.println(e.getMessage());
+    }
+    return result;
+}
 
 }
