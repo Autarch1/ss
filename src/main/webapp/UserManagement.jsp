@@ -36,7 +36,7 @@
         </div>  
         <div class="col-md-6">
             <p>User: ${currentUser.name }</p>
-			<p>Current Date : <%= (new java.util.Date()).toLocaleString()%></p>	
+<p class="my-2" style="color:#000000">Current Time : <span id="currentDateTime"></span></p>        </div>  
         </div>  
         <div class="col-md-1" >
             <input type="button" class="btn-basic" id="lgnout-button" value="Log Out" onclick="location.href='LogoutServlet'">
@@ -100,15 +100,22 @@
             <tbody>
             
             <% 
-/* 			String id = (String) request.getParameter("id");
- */            String name = (String) request.getParameter("name");
-            	UserDAO dao = new UserDAO();
-				List<UserResponseDTO> dto =dao.getAllUsers();
-				if( name!=null){
-					dto = dto.stream().filter(user->user.getName().equals(name)).collect(Collectors.toList());
-				}
+            String idParam = request.getParameter("user_id");
+            String nameParam = request.getParameter("name");
+            UserDAO dao = new UserDAO();
+            List<UserResponseDTO> userList = dao.getAllUsers();
+            
+            if (nameParam != null || (idParam != null && !idParam.isEmpty())) {
+                userList = userList.stream()
+                    .filter(user -> 
+                        (nameParam == null || user.getName().equals(nameParam)) ||
+                        (idParam == null || idParam.isEmpty() || user.getUser_id() == Integer.parseInt(idParam))
+                    )
+                    .collect(Collectors.toList());
+            }
 
-            	request.setAttribute("userList", dto);
+
+            	request.setAttribute("userList", userList);
             	
             %>
             <c:if test="${isUser }">
@@ -193,6 +200,23 @@
               }
               });
             }
+            
+
+            function updateDateTime(){
+                const currentDateTimeElement = document.getElementById("currentDateTime");
+                const currentDateTime = new Date();
+                currentDateTimeElement.innerHTML = currentDateTime.toLocaleString('en-US', {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+                });
+              }
+              updateDateTime();
+              setInterval(updateDateTime, 1000);
             </script>
 </body>
 

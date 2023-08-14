@@ -33,8 +33,7 @@
         <div class="col-md-6">
            	            <p>User: ${currentUser.name }</p>
            	
-            <p >Current Date : <%= (new java.util.Date()).toLocaleString()%>	 </p>
-        </div> 
+<p class="my-2" style="color:#000000">Current Time : <span id="currentDateTime"></span></p>        </div> 
         <div class="col-md-1" >
             <input type="button" class="btn-basic" id="lgnout-button" value="Log Out" onclick="location.href='LogoutServlet'">
         </div>   
@@ -172,6 +171,22 @@
               }
               });
             }
+
+            function updateDateTime(){
+                const currentDateTimeElement = document.getElementById("currentDateTime");
+                const currentDateTime = new Date();
+                currentDateTimeElement.innerHTML = currentDateTime.toLocaleString('en-US', {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+                });
+              }
+              updateDateTime();
+              setInterval(updateDateTime, 1000);
             </script>
 </body>
 

@@ -40,7 +40,7 @@
     </div>  
     <div class="col-md-6">
         <p>User : ${currentUser.name }</p>
-            <p>Current Date : <%= (new java.util.Date()).toLocaleString()%></p>
+<p class="my-2" style="color:#000000">Current Time : <span id="currentDateTime"></span></p>        </div>  
     </div>  
     <div class="col-md-1" >
         <input type="button" class="btn-basic" id="lgnout-button" value="Log Out" onclick="location.href='LogoutServlet'">
@@ -78,7 +78,7 @@
         </div>
         <div class="col-auto">
             <label for="inputPassword2" class="visually-hidden">Course</label>
-            <input type="text" class="form-control" id="inputPassword2" placeholder="Course">
+            <input type="text" class="form-control" id="inputPassword2" placeholder="Course" name="studentAttend">
           </div>
         <div class="col-auto">
           <button type="submit" class="btn btn-success mb-3">Search</button>
@@ -102,11 +102,18 @@
         <% 
             String id = (String)request.getParameter("studentID");
             String name = (String) request.getParameter("studentName");
+            String attendCourse = request.getParameter("studentAttend");
+
         	StudentDAO dao = new StudentDAO();
            	List<StudentResponseDTO> dto = dao.getAllStudents();
-            if(id!=null&& name!=null){		
-            	dto = dto.stream().filter(stu->stu.getStudId().equals(id) && stu.getName().equals(name)).collect(Collectors.toList());
+            if(id!=null || name!=null ||attendCourse != null){		
+            	dto = dto.stream().filter(stu->stu.getStudId().equals(id) || stu.getName().equals(name) || java.util.Arrays.asList(stu.getAttend()).contains(attendCourse)  ).collect(Collectors.toList());
             }
+
+            
+              
+                
+            
             request.setAttribute("stuList", dto);
             CourseDAO cDao = new CourseDAO();
             request.setAttribute("cList", cDao.getAllCourses());
@@ -160,6 +167,22 @@
               }
               });
             }
+            
+            function updateDateTime(){
+                const currentDateTimeElement = document.getElementById("currentDateTime");
+                const currentDateTime = new Date();
+                currentDateTimeElement.innerHTML = currentDateTime.toLocaleString('en-US', {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+                });
+              }
+              updateDateTime();
+              setInterval(updateDateTime, 1000);
             </script>
             
 </body>
